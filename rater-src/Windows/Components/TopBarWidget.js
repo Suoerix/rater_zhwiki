@@ -32,7 +32,7 @@ function TopBarWidget( config ) {
 			hans: "添加维基专题横幅或相关模板...",
 			hant: "添加維基專題橫幅或相關模板..."
 		}),
-		$element: $("<div style='display:inline-block; margin:0 -1px; width:calc(100% - 55px);'>"),
+		$element: $("<div style='display:inline-block; margin:0 -1px; width:calc(100% - 100px);'>"),
 		$overlay: this.$overlay,
 	} );
 	getBannerNames()
@@ -79,8 +79,20 @@ function TopBarWidget( config ) {
 		flags: "progressive",
 		$element: $("<span style='float:right;margin: 0;transform: translateX(-12px);'>"),
 	} );
+	
+	// 添加获取其他语言版专题横幅的按钮
+	this.fetchOtherLangBannersButton = new OO.ui.ButtonWidget( {
+		icon: "language",
+		title: HanAssist.conv({
+			hans: "获取其他语言版专题横幅",
+			hant: "獲取其他語言版專題橫幅"
+		}),
+		flags: "progressive",
+		$element: $("<span style='float:right;margin:0 4px;'>"),
+	} );
+	
 	var $searchContainer = $("<div style='display:inline-block; flex-shrink:1; flex-grow:100; min-width:250px; width:50%;'>")
-		.append(this.searchBox.$element, this.addBannerButton.$element);
+		.append(this.searchBox.$element, this.addBannerButton.$element, this.fetchOtherLangBannersButton.$element);
 
 	// Set all classes/importances
 	// in the style of a popup button with a menu (is actually a dropdown with a hidden label, because that makes the coding easier.)
@@ -102,7 +114,7 @@ function TopBarWidget( config ) {
 				new OO.ui.MenuOptionWidget( {
 					data: {class: null},
 					label: $('<span>').css('color', '#777').text(HanAssist.conv({
-						hans: "（未評定）",
+						hans: "（未评定）",
 						hant: "（未評定）"
 					}))
 				} ),
@@ -123,7 +135,7 @@ function TopBarWidget( config ) {
 				new OO.ui.MenuOptionWidget( {
 					data: {importance: null},
 					label: $('<span>').css('color', '#777').text(HanAssist.conv({
-						hans: "（未評定）",
+						hans: "（未评定）",
 						hant: "（未評定）"
 					}))
 				}),
@@ -202,6 +214,7 @@ function TopBarWidget( config ) {
 		"choose": "onSearchSelect"
 	});
 	this.addBannerButton.connect(this, {"click": "onSearchSelect"});
+	this.fetchOtherLangBannersButton.connect(this, {"click": "onFetchOtherLangBannersClick"});
 	this.setAllDropDown.getMenu().connect(this, {"choose": "onRatingChoose"});
 	this.removeAllButton.connect(this, {"click": "onRemoveAllClick"});
 	this.clearAllButton.connect(this, {"click": "onClearAllClick"});
@@ -210,6 +223,10 @@ OO.inheritClass( TopBarWidget, OO.ui.PanelLayout );
 
 TopBarWidget.prototype.onSearchSelect = function(data) {
 	this.emit("searchSelect", data);
+};
+
+TopBarWidget.prototype.onFetchOtherLangBannersClick = function() {
+	this.emit("fetchOtherLangBanners");
 };
 
 TopBarWidget.prototype.onRatingChoose = function(item) {
@@ -234,6 +251,7 @@ TopBarWidget.prototype.setDisabled = function(disable) {
 	[
 		this.searchBox,
 		this.addBannerButton,
+		this.fetchOtherLangBannersButton,
 		this.setAllDropDown,
 		this.removeAllButton,
 		this.clearAllButton

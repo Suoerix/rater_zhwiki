@@ -22,7 +22,9 @@ var config = {
 		"autofillClassFromOres": true,
 		"autofillImportance": true,
 		"collapseParamsLowerLimit": 6,
-		"watchlist": "preferences"
+		"watchlist": "preferences",
+		"otherLanguageCode": "en",
+		"autoFetchOtherLangBanners": false
 	},
 	// MediaWiki configuration values
 	mw: mw.config.get( [

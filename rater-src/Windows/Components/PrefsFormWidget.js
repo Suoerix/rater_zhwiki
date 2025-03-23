@@ -65,10 +65,21 @@ function PrefsFormWidget( config ) {
 						data: "nochange",
 						label: "从不",
 						title: "用 Rater 编辑的页面不添加到监视列表"
-					} ),
+					} )
 				]
 			}).selectItemByData("preferences"),
 			label: "添加编辑的页面到监视列表"
+		},
+		"otherLanguageCode": {
+			input: new OO.ui.TextInputWidget({
+				placeholder: "en",
+				value: "en"
+			}),
+			label: "其他语言维基代码"
+		},
+		"autoFetchOtherLangBanners": {
+			input: new OO.ui.ToggleSwitchWidget(),
+			label: "自动获取其他语言版专题横幅"
 		},
 		"resetCache": {
 			input: new OO.ui.ButtonWidget( {
