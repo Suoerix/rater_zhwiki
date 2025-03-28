@@ -32,7 +32,7 @@ function TopBarWidget( config ) {
 			hans: "添加维基专题横幅或相关模板...",
 			hant: "添加維基專題橫幅或相關模板..."
 		}),
-		$element: $("<div style='display:inline-block; margin:0 -1px; width:calc(100% - 100px);'>"),
+		$element: $("<div style='display:inline-block; margin:0 -1px; width:calc(100% - 55px);'>"),
 		$overlay: this.$overlay,
 	} );
 	getBannerNames()
@@ -87,12 +87,11 @@ function TopBarWidget( config ) {
 			hans: "获取其他语言版专题横幅",
 			hant: "獲取其他語言版專題橫幅"
 		}),
-		flags: "progressive",
-		$element: $("<span style='float:right;margin:0 4px;'>"),
+		flags: "progressive"
 	} );
 	
 	var $searchContainer = $("<div style='display:inline-block; flex-shrink:1; flex-grow:100; min-width:250px; width:50%;'>")
-		.append(this.searchBox.$element, this.addBannerButton.$element, this.fetchOtherLangBannersButton.$element);
+		.append(this.searchBox.$element, this.addBannerButton.$element);
 
 	// Set all classes/importances
 	// in the style of a popup button with a menu (is actually a dropdown with a hidden label, because that makes the coding easier.)
@@ -190,6 +189,9 @@ function TopBarWidget( config ) {
 	} );
 	// Include the dropdown in the group
 	this.menuButtons.$element.prepend(this.setAllDropDown.$element);
+	
+	// 语言按钮添加到"全部统一设为"按钮的右侧
+	this.menuButtons.$element.children().first().after(this.fetchOtherLangBannersButton.$element);
 
 	// Put everything into a layout
 	this.$element.addClass("rater-topBarWidget")

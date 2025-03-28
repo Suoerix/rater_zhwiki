@@ -856,47 +856,51 @@ MainWindow.prototype.onFetchOtherLangBanners = function() {
 	const pageTitle = appConfig.mw.wgPageName;
 	const langCode = this.preferences.otherLanguageCode;
 	
-	// 显示加载中消息
-	const loadingDialog = new OO.ui.MessageDialog();
-	const windowManager = new OO.ui.WindowManager();
-	$('body').append(windowManager.$element);
-	windowManager.addWindows([loadingDialog]);
-	windowManager.openWindow(loadingDialog, {
-		title: HanAssist.conv({
-			hans: '获取中...',
-			hant: '獲取中...'
-		}),
-		message: HanAssist.conv({
-			hans: `正在从${langCode}维基获取专题横幅...`,
-			hant: `正在從${langCode}維基獲取專題橫幅...`
-		}),
-		actions: []
-	});
+	// 使用与本地搜索相同的加载动画
+	this.topBar.searchBox.pushPending();
 	
 	// 获取其他语言的专题横幅
 	getOtherLangProjectBanners(pageTitle, langCode)
 		.then(banners => {
-			// 关闭加载对话框
-			windowManager.closeWindow(loadingDialog);
-			
 			if (banners.length === 0) {
 				// 没有找到横幅或没有对应的中文横幅
 				mw.notify(HanAssist.conv({
 					hans: `未找到${langCode}维基对应的专题横幅，或没有对应的中文横幅。`,
 					hant: `未找到${langCode}維基對應的專題橫幅，或沒有對應的中文橫幅。`
 				}));
+				this.topBar.searchBox.popPending();
 				return;
 			}
 			
 			// 添加发现的横幅
 			let addedCount = 0;
 			
-			// 创建横幅对象数组
-			const bannerPromises = banners.map(banner => {
+			// 逐个处理每个找到的横幅
+			const processNextBanner = (index) => {
+				if (index >= banners.length) {
+					// 所有横幅都处理完毕，显示通知
+					if (addedCount > 0) {
+						mw.notify(HanAssist.conv({
+							hans: `已添加${addedCount}个来自${langCode}维基的专题横幅。`,
+							hant: `已添加${addedCount}個來自${langCode}維基的專題橫幅。`
+						}));
+					} else if (banners.length > 0) {
+						mw.notify(HanAssist.conv({
+							hans: `找到的专题横幅已经存在。`,
+							hant: `找到的專題橫幅已經存在。`
+						}));
+					}
+					// 结束加载动画
+					this.topBar.searchBox.popPending();
+					return;
+				}
+				
+				const banner = banners[index];
+				
 				// 检查是否已经添加了这个横幅
 				if (!this.bannerList.hasBanner(banner.name)) {
 					// 使用静态方法创建新的BannerWidget
-					return BannerWidget.newFromTemplateName(banner.name, {
+					BannerWidget.newFromTemplateName(banner.name, {
 						parameters: [{
 							name: "from-other-lang",
 							value: banner.sourceLang
@@ -909,41 +913,34 @@ MainWindow.prototype.onFetchOtherLangBanners = function() {
 						$overlay: this.$overlay,
 						isArticle: this.pageInfo.isArticle
 					}).then(bannerWidget => {
-						addedCount++;
-						return bannerWidget;
-					});
-				}
-				return null;
-			});
-			
-			Promise.all(bannerPromises.filter(p => p !== null))
-				.then(newBanners => {
-					// 过滤掉null值并添加到bannerList
-					if (newBanners.length > 0) {
-						this.bannerList.addItems(newBanners);
+						// 单个添加横幅，与本地搜索添加的动画效果相同
+						this.bannerList.addItems([bannerWidget]);
+						bannerWidget.setChanged();
+						this.updateSize();
 						
-						mw.notify(HanAssist.conv({
-							hans: `已添加${addedCount}个来自${langCode}维基的专题横幅。`,
-							hant: `已添加${addedCount}個來自${langCode}維基的專題橫幅。`
-						}));
-					} else {
-						mw.notify(HanAssist.conv({
-							hans: `找到的专题横幅已经存在。`,
-							hant: `找到的專題橫幅已經存在。`
-						}));
-					}
-				});
+						addedCount++;
+						
+						// 处理下一个横幅
+						setTimeout(() => processNextBanner(index + 1), 100);
+					});
+				} else {
+					// 如果横幅已存在，直接处理下一个
+					processNextBanner(index + 1);
+				}
+			};
+			
+			// 开始处理第一个横幅
+			processNextBanner(0);
 		})
 		.catch(error => {
-			// 关闭加载对话框
-			windowManager.closeWindow(loadingDialog);
-			
 			// 显示错误信息
 			console.error("[Rater]", error);
 			mw.notify(HanAssist.conv({
 				hans: `获取专题横幅时出错：${error.message || error}`,
 				hant: `獲取專題橫幅時出錯：${error.message || error}`
 			}), {type: 'error'});
+			// 结束加载动画
+			this.topBar.searchBox.popPending();
 		});
 };
 
