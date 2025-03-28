@@ -24,7 +24,8 @@ var config = {
 		"collapseParamsLowerLimit": 6,
 		"watchlist": "preferences",
 		"otherLanguageCode": "en",
-		"autoFetchOtherLangBanners": false
+		"autoFetchOtherLangBanners": "off",
+		"skipCloseConfirmation": false
 	},
 	// MediaWiki configuration values
 	mw: mw.config.get( [

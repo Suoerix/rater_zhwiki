@@ -359,8 +359,9 @@ MainWindow.prototype.getSetupProcess = function ( data ) {
 			this.bannerList.addShellTemplateIfNeeeded()
 				.syncShellTemplateWithBiographyBanner();
 				
-			// 如果设置了自动获取其他语言专题横幅，并且没有找到横幅，则自动触发获取
-			if (this.preferences.autoFetchOtherLangBanners && this.bannerList.items.length === 0) {
+			// 根据自动获取其他语言专题横幅的设置执行不同的操作
+			if (this.preferences.autoFetchOtherLangBanners === "always" || 
+				(this.preferences.autoFetchOtherLangBanners === "noLocal" && this.bannerList.items.length === 0)) {
 				// 使用setTimeout，让界面先初始化完成再执行
 				setTimeout(() => {
 					this.onFetchOtherLangBanners();
@@ -605,7 +606,7 @@ MainWindow.prototype.getActionProcess = function ( action ) {
 
 	} else if (!action && this.bannerList.changed) {
 		// Confirm closing of dialog if there have been changes 
-		if(confirm(HanAssist.conv({
+		if(this.preferences.skipCloseConfirmation || confirm(HanAssist.conv({
 			hans: "关闭 Rater 将放弃未保存的更改，确认关闭？",
 			hant: "關閉 Rater 將放棄未保存的更改，確認關閉？"
 		}))) {
@@ -849,7 +850,10 @@ MainWindow.prototype.makeEditSummary = function() {
 	hant: "］"
 }); }
 
-	return `評級${overallRating}：${[...editedBanners, ...newBanners, ...removedBanners].join("、")}${appConfig.script.advert}`;
+	return HanAssist.conv({
+		hans: `评级${overallRating}：${[...editedBanners, ...newBanners, ...removedBanners].join("、")}${appConfig.script.advert}`,
+		hant: `評級${overallRating}：${[...editedBanners, ...newBanners, ...removedBanners].join("、")}${appConfig.script.advert}`
+	});
 };
 
 MainWindow.prototype.onFetchOtherLangBanners = function() {

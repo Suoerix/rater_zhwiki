@@ -78,8 +78,30 @@ function PrefsFormWidget( config ) {
 			label: "其他语言维基代码"
 		},
 		"autoFetchOtherLangBanners": {
+			input: new OO.ui.ButtonSelectWidget( {
+				items: [
+					new OO.ui.ButtonOptionWidget( {
+						data: "always",
+						label: "总是",
+						title: "总是在启动后检查其他语言版"
+					} ),
+					new OO.ui.ButtonOptionWidget( {
+						data: "noLocal",
+						label: "本地无专题时",
+						title: "仅当本地没有专题横幅时，才检查其他语言版"
+					} ),
+					new OO.ui.ButtonOptionWidget( {
+						data: "off",
+						label: "从不",
+						title: "不自动获取其他语言版专题横幅"
+					} )
+				]
+			}).selectItemByData("off"),
+			label: "启动后自动获取其他语言版专题横幅"
+		},
+		"skipCloseConfirmation": {
 			input: new OO.ui.ToggleSwitchWidget(),
-			label: "自动获取其他语言版专题横幅"
+			label: "关闭时不显示确认提示"
 		},
 		"resetCache": {
 			input: new OO.ui.ButtonWidget( {
