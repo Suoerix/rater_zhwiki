@@ -208,5 +208,5 @@ function getOtherLangProjectBanners(pageTitle, langCode) {
         });
 }
 
-export { getOtherLangProjectBanners };
+export { getOtherLangProjectBanners, getOtherLangTitle, getTalkPageContent, parseProjectBanners, getTemplateInOtherLang };
 // </nowiki> 

@@ -83,7 +83,7 @@ function PrefsFormWidget( config ) {
 					new OO.ui.ButtonOptionWidget( {
 						data: "always",
 						label: "总是",
-						title: "总是在启动后检查其他语言版"
+						title: "当页面存在设定语言版本时，总是在启动后检查其专题横幅"
 					} ),
 					new OO.ui.ButtonOptionWidget( {
 						data: "noLocal",
