@@ -41,18 +41,26 @@ var config = {
 		"wgCategories",
 		"wgIsMainPage"
 	] ),
+	// see also https://zh.wikipedia.org/wiki/Wikipedia:%E9%A1%B5%E9%9D%A2%E8%AF%84%E7%BA%A7#%E6%A2%9D%E7%9B%AE%E5%93%81%E8%B3%AA%E7%B4%9A%E5%88%A5
 	bannerDefaults: {
 		classes: [
 			"FA",
 			"FL",
 			"A",
 			"GA",
+			"Bplus",
 			"B",
 			"C",
+			"D",
 			"Start",
+			"Substub",
 			"Stub",
 			"List",
-			"Disambig"
+			"Disambig",
+			"AL",
+			"BL",
+			"CL",
+			"SL",
 		],
 		importances: [
 			"Top",
@@ -68,7 +76,6 @@ var config = {
 			"Portal",
 			"Project",
 			"Template",
-			//"Bplus",
 			"Future",
 			"Current",
 			"NA",
@@ -99,11 +106,30 @@ var config = {
 				hans: '优良条目',
 				hant: '優良條目'
 			},
+			Bplus: '乙上',
 			B: '乙',
 			C: '丙',
+			D: '丁',
 			Start: '初',
+			Substub: '小小作品',
 			Stub: '小作品',
 			List: '列表',
+			AL: {
+				hans: '甲级列表',
+				hant: '甲級列表'
+			},
+			BL: {
+				hans: '乙级列表',
+				hant: '乙級列表'
+			},
+			CL: {
+				hans: '丙级列表',
+				hant: '丙級列表'
+			},
+			SL: {
+				hans: '小列表',
+				hant: '小列表'
+			},
 			Disambig: {
 				hans: '消歧义',
 				hant: '消歧義'
@@ -141,7 +167,6 @@ var config = {
 				hant: '專案'
 			},
 			Template: '模板',
-			// Bplus: '',
 			Future: '未来',
 			Current: {
 				hans: '新闻动态',
@@ -202,7 +227,12 @@ var config = {
 		"Banner shell",
 		"Scope shell",
 		"Project shell",
-		"WikiProject banner"
+		"WikiProject banner",
+		"Multiple wikiprojects",
+		"多个专题",
+		"多個專題",
+		"專題橫幅",
+		"維基專題橫幅"
 	],
 	defaultParameterData: {
 		"auto": {
@@ -280,6 +310,18 @@ var config = {
 		}
 	}
 };
+
+// window.rater_classesRankMap="Substub|Stub|Start|D|C|B|Bplus|GA|A|FA|SL|List|CL|BL|AL|FL|Disambig";
+// TODO: extendedClasses rank
+if ( window.rater_classesRankMap != undefined ) {
+	const priority = window.rater_classesRankMap.split("|"). // 优先的值
+		filter(item => config.bannerDefaults.classes.includes(item)); // 禁止新增值
+	const newMap = [
+	...priority,
+	...config.bannerDefaults.classes.filter(item => !priority.includes(item))
+	];
+	config.bannerDefaults.classes = newMap;
+}
 
 export default config;
 // </nowiki>
